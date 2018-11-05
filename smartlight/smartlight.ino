@@ -16,6 +16,9 @@ float light;
 //motion sensor
 const int motionPin = 6;
 
+//neopixel
+const int neoPin = 8;
+
 void setup() {
   lcd.begin(16, 2);
   lcd.setCursor(0, 1);
