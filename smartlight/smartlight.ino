@@ -8,12 +8,14 @@ Adafruit_NeoPixel neo;
 
 //temperature sensor
 const int temperaturePin = 3;
+const int temperatureTreshold = 20;
 int temperatureInput;
 float temperature;
 float resistance;
 
 //light sensor
 const int lightPin = 2;
+const int lightTreshold = 700;
 float light;
 
 //motion sensor
@@ -25,6 +27,11 @@ const int neoPin = 8;
 //rotary switches
 const int switchPin1 = 0;
 const int switchPin2 = 1;
+
+//colors
+const uint32_t white = neo.Color(255, 255, 255);
+const uint32_t warmWhite = neo.Color(255, 150, 40);
+const uint32_t black = neo.Color(0, 0, 0);
 
 void setup() {
   lcd.begin(16, 2);
@@ -40,11 +47,20 @@ void loop() {
   delay(500);
 }
 
-void temperatureMode() {
-  if(getTemperature() > 20) {
-    setPixelColor(255, 150, 40);
+void lightMode() {
+  if(getLight() > lightTreshold) {
+    setPixelColor(black);
   } else {
-    setPixelColor(255, 255, 250);
+    //perhaps restore previous color?
+    setPixelColor(white);
+  }
+}
+
+void temperatureMode() {
+  if(getTemperature() > temperatureTreshold) {
+    setPixelColor(warmWhite);
+  } else {
+    setPixelColor(white);
   }
 }
 
@@ -69,6 +85,15 @@ int getMotion() {
 void setPixelColor(int green, int red, int blue) {
   for(int i = 0; i < neo.numPixels(); i++) {
     neo.setPixelColor(i, green, red, blue);
+  }
+
+  neo.show();
+}
+
+//set the color of all pixels at once
+void setPixelColor(uint32_t color) {
+  for(int i = 0; i < neo.numPixels(); i++) {
+    neo.setPixelColor(i, color);
   }
 
   neo.show();
