@@ -37,7 +37,15 @@ void setup() {
 }
 
 void loop() {
-  
+  delay(500);
+}
+
+void temperatureMode() {
+  if(getTemperature() > 20) {
+    setPixelColor(255, 150, 40);
+  } else {
+    setPixelColor(255, 255, 250);
+  }
 }
 
 //temperature in celcius
@@ -55,18 +63,6 @@ float getLight() {
 //motion value 0 or 1
 int getMotion() {
   return digitalRead(motionPin);
-}
-
-//print to first line of lcd
-void printFirstLine(char string[]) {
-  lcd.setCursor(0, 0);
-  lcd.print(string);
-}
-
-//print to last line of lcd
-void printLastLine(char string[]) {
-  lcd.setCursor(0, 1);
-  lcd.print(string);
 }
 
 //set the color of all pixels at once
