@@ -45,6 +45,16 @@ void setup() {
 
 void loop() {
   delay(500);
+  motionMode();
+}
+
+void motionMode() {
+  if(getMotion()) {
+    setPixelColor(white);
+  } else {
+    //perhaps check time interval with no motion?
+    setPixelColor(black);
+  }
 }
 
 void lightMode() {
