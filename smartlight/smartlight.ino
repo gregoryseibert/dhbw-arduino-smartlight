@@ -1,10 +1,15 @@
 #include <LiquidCrystal.h>
 #include <Adafruit_NeoPixel.h>
 
+//lcd
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
+//neopixel
 Adafruit_NeoPixel neo;
+
+//delay of the looping method in seconds
+const int loopDelay = 500;
 
 //temperature sensor
 const int temperaturePin = 3;
@@ -20,6 +25,8 @@ float light;
 
 //motion sensor
 const int motionPin = 6;
+const int motionDelayDuration = 1000 * 10;
+int motionDelayCounter = motionDelayDuration / loopDelay;
 
 //neopixel
 const int neoPin = 8;
@@ -44,24 +51,53 @@ void setup() {
 }
 
 void loop() {
-  delay(500);
-  motionMode();
+  delay(loopDelay);
+  lightMode();
 }
 
 void motionMode() {
   if(getMotion()) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Motion: active");
+    
     setPixelColor(white);
+    motionDelayCounter = motionDelayDuration / loopDelay;
   } else {
-    //perhaps check time interval with no motion?
-    setPixelColor(black);
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Motion: inactive");
+    lcd.setCursor(0, 1);
+    lcd.print("Sleep in ");
+    lcd.print(motionDelayCounter * loopDelay / 1000);
+    lcd.print("s");
+    
+    if(motionDelayCounter <= 0) {
+      setPixelColor(black);
+    } else {
+      motionDelayCounter = motionDelayCounter - 1;
+    }
   }
 }
 
 void lightMode() {
-  if(getLight() > lightTreshold) {
+  float light = getLight();
+  
+  if(light > lightTreshold) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Brightness: ");
+    lcd.print(light/lightTreshold);
+    lcd.setCursor(0, 1);
+    lcd.print("Light off");
     setPixelColor(black);
   } else {
-    //perhaps restore previous color?
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Brightness: ");
+    lcd.print(light/lightTreshold);
+    lcd.setCursor(0, 1);
+    lcd.print("Light on");
     setPixelColor(white);
   }
 }
