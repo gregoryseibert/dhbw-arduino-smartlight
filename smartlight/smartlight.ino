@@ -8,8 +8,14 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 //neopixel
 Adafruit_NeoPixel neo;
 
-//delay of the looping method in seconds
-const int loopDelay = 500;
+//delay of the looping method in milliseconds
+const int loopDelay = 250;
+
+//push button
+const int buttonPin = 7;
+int buttonState = 0;
+const int numberOfModes = 3;
+int currentMode = 1;
 
 //temperature sensor
 const int temperaturePin = 3;
@@ -48,11 +54,30 @@ void setup() {
   neo.begin();
   neo.setBrightness(75);
   neo.show();
+
+  pinMode(buttonPin, INPUT);
 }
 
 void loop() {
+  buttonState = digitalRead(buttonPin);
+
+  if (buttonState == HIGH) {
+    currentMode = currentMode + 1;
+
+    if(currentMode > numberOfModes) {
+      currentMode = 1;
+    }
+  }
+  
   delay(loopDelay);
-  temperatureMode();
+
+  if(currentMode == 1) {
+    motionMode();
+  } else if (currentMode == 2) {
+    lightMode();
+  } else {
+    temperatureMode();    
+  }
 }
 
 void motionMode() {
