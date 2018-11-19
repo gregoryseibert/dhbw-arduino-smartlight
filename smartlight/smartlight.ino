@@ -52,23 +52,22 @@ void setup() {
 
 void loop() {
   delay(loopDelay);
-  lightMode();
+  temperatureMode();
 }
 
 void motionMode() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+    
   if(getMotion()) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Motion: active");
+    lcd.print("Motion active");
     
     setPixelColor(white);
     motionDelayCounter = motionDelayDuration / loopDelay;
   } else {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Motion: inactive");
+    lcd.print("Motion inactive");
     lcd.setCursor(0, 1);
-    lcd.print("Sleep in ");
+    lcd.print("-> Sleep in ");
     lcd.print(motionDelayCounter * loopDelay / 1000);
     lcd.print("s");
     
@@ -82,30 +81,42 @@ void motionMode() {
 
 void lightMode() {
   float light = getLight();
+    
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Brightness ");
+  lcd.print(light/lightTreshold);
   
   if(light > lightTreshold) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Brightness: ");
-    lcd.print(light/lightTreshold);
     lcd.setCursor(0, 1);
-    lcd.print("Light off");
+    lcd.print("-> Light off");
+    
     setPixelColor(black);
   } else {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Brightness: ");
-    lcd.print(light/lightTreshold);
     lcd.setCursor(0, 1);
-    lcd.print("Light on");
+    lcd.print("-> Light on");
+    
     setPixelColor(white);
   }
 }
 
 void temperatureMode() {
-  if(getTemperature() > temperatureTreshold) {
+  float temperature = getTemperature();
+  
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Temperature ");
+  lcd.print(temperature);
+    
+  if(temperature > temperatureTreshold) {
+    lcd.setCursor(0, 1);
+    lcd.print("-> Warm light");
+    
     setPixelColor(warmWhite);
   } else {
+    lcd.setCursor(0, 1);
+    lcd.print("-> Cool light");
+    
     setPixelColor(white);
   }
 }
