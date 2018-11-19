@@ -1,9 +1,11 @@
 #include <LiquidCrystal.h>
 #include <Adafruit_NeoPixel.h>
 
+//lcd
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
+//neopixel
 Adafruit_NeoPixel neo;
 
 //delay of the looping method in seconds
@@ -55,12 +57,23 @@ void loop() {
 
 void motionMode() {
   if(getMotion()) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Motion: active");
+    
     setPixelColor(white);
     motionDelayCounter = motionDelayDuration / loopDelay;
   } else {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Motion: inactive");
+    lcd.setCursor(0, 1);
+    lcd.print("Sleep in ");
+    lcd.print(motionDelayCounter * loopDelay / 1000);
+    lcd.print("s");
+    
     if(motionDelayCounter <= 0) {
       setPixelColor(black);
-      motionDelayCounter = motionDelayDuration / loopDelay;
     } else {
       motionDelayCounter = motionDelayCounter - 1;
     }
