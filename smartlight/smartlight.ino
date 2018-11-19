@@ -6,6 +6,9 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 Adafruit_NeoPixel neo;
 
+//delay of the looping method in seconds
+const int loopDelay = 500;
+
 //temperature sensor
 const int temperaturePin = 3;
 const int temperatureTreshold = 20;
@@ -20,6 +23,8 @@ float light;
 
 //motion sensor
 const int motionPin = 6;
+const int motionDelayDuration = 1000 * 10;
+int motionDelayCounter = motionDelayDuration / loopDelay;
 
 //neopixel
 const int neoPin = 8;
@@ -44,16 +49,21 @@ void setup() {
 }
 
 void loop() {
-  delay(500);
+  delay(loopDelay);
   motionMode();
 }
 
 void motionMode() {
   if(getMotion()) {
     setPixelColor(white);
+    motionDelayCounter = motionDelayDuration / loopDelay;
   } else {
-    //perhaps check time interval with no motion?
-    setPixelColor(black);
+    if(motionDelayCounter <= 0) {
+      setPixelColor(black);
+      motionDelayCounter = motionDelayDuration / loopDelay;
+    } else {
+      motionDelayCounter = motionDelayCounter - 1;
+    }
   }
 }
 
