@@ -52,7 +52,7 @@ void setup() {
 
 void loop() {
   delay(loopDelay);
-  motionMode();
+  lightMode();
 }
 
 void motionMode() {
@@ -81,10 +81,23 @@ void motionMode() {
 }
 
 void lightMode() {
-  if(getLight() > lightTreshold) {
+  float light = getLight();
+  
+  if(light > lightTreshold) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Brightness: ");
+    lcd.print(light/lightTreshold);
+    lcd.setCursor(0, 1);
+    lcd.print("Light off");
     setPixelColor(black);
   } else {
-    //perhaps restore previous color?
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Brightness: ");
+    lcd.print(light/lightTreshold);
+    lcd.setCursor(0, 1);
+    lcd.print("Light on");
     setPixelColor(white);
   }
 }
