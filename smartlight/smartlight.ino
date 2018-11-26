@@ -14,12 +14,16 @@ const int loopDelay = 250;
 //push button
 const int buttonPin = 7;
 int buttonState = 0;
-const int numberOfModes = 3;
+const int numberOfModes = 4;
 int currentMode = 1;
+
+//poti
+const int potiPin = 0;
+float potiState = 0;
 
 //temperature sensor
 const int temperaturePin = 3;
-const int temperatureTreshold = 20;
+const int temperatureTreshold = 20; //20 Celcius
 int temperatureInput;
 float temperature;
 float resistance;
@@ -31,7 +35,7 @@ float light;
 
 //motion sensor
 const int motionPin = 6;
-const int motionDelayDuration = 1000 * 10;
+const int motionDelayDuration = 1000 * 10; //10s
 int motionDelayCounter = motionDelayDuration / loopDelay;
 
 //neopixel
@@ -42,8 +46,8 @@ const int switchPin1 = 0;
 const int switchPin2 = 1;
 
 //colors
-const uint32_t white = neo.Color(255, 255, 255);
-const uint32_t warmWhite = neo.Color(255, 150, 40);
+uint32_t white = neo.Color(255, 255, 255);
+uint32_t warmWhite = neo.Color(255, 150, 40);
 const uint32_t black = neo.Color(0, 0, 0);
 
 void setup() {
@@ -58,9 +62,8 @@ void setup() {
   pinMode(buttonPin, INPUT);
 }
 
-void loop() {
+void loop() { 
   buttonState = digitalRead(buttonPin);
-
   if (buttonState == HIGH) {
     currentMode = currentMode + 1;
 
@@ -70,14 +73,21 @@ void loop() {
   }
   
   delay(loopDelay);
-
+  
   if(currentMode == 1) {
+    manualMode();
+  } else if(currentMode == 2) {
     motionMode();
-  } else if (currentMode == 2) {
+  } else if (currentMode == 3) {
     lightMode();
   } else {
     temperatureMode();    
   }
+}
+
+void manualMode() {
+  potiState = analogRead(potiPin); //0-1023
+  setPixelColor(mapToColor(potiState, 0, 1023);
 }
 
 void motionMode() {
@@ -144,6 +154,17 @@ void temperatureMode() {
     
     setPixelColor(white);
   }
+}
+
+//map a value which is between minimum and maximum to a neopixel color
+uint32_t mapToColor(int value, int minimum, int maximum) {
+  float ratio = 2 * (value - minimum) / (maximum - minimum);
+  
+  int blue = max(0, 255 * (1 - ratio));
+  int red = max(0, 255 * (ratio - 1));
+  int green = 255 - blue - red;
+
+  return neo.Color(green, red, blue);
 }
 
 //temperature in celcius
