@@ -88,6 +88,10 @@ void loop() {
 void manualMode() {
   potiState = analogRead(potiPin); //0-1023
   setPixelColor(mapToColor(potiState, 0, 1023);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Manual");
 }
 
 void motionMode() {
