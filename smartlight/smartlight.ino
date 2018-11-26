@@ -86,12 +86,13 @@ void loop() {
 }
 
 void manualMode() {
-  potiState = analogRead(potiPin); //0-1023
-  setPixelColor(mapToColor(potiState, 0, 1023);
-
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Manual");
+  
+  potiState = analogRead(potiPin); //0-1023
+  
+  setPixelColor(mapToColor(potiState, 0, 1023));
 }
 
 void motionMode() {
@@ -161,12 +162,19 @@ void temperatureMode() {
 }
 
 //map a value which is between minimum and maximum to a neopixel color
-uint32_t mapToColor(int value, int minimum, int maximum) {
+uint32_t mapToColor(float value, float minimum, float maximum) {
   float ratio = 2 * (value - minimum) / (maximum - minimum);
   
-  int blue = max(0, 255 * (1 - ratio));
-  int red = max(0, 255 * (ratio - 1));
+  int blue = fmax(0, 255 * (1 - ratio));
+  int red = fmax(0, 255 * (ratio - 1));
   int green = 255 - blue - red;
+
+  lcd.setCursor(0, 1);
+  lcd.print(red);
+  lcd.print(" ");
+  lcd.print(green);
+  lcd.print(" ");
+  lcd.print(blue);
 
   return neo.Color(green, red, blue);
 }
